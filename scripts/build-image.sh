@@ -81,7 +81,7 @@ if [ -z "${img##*server*}" ]; then
     parted --script "${disk}" \
     mklabel gpt \
     mkpart primary fat32 16MiB 20MiB \
-    mkpart primary ext4 20MiB 100%
+    mkpart primary btrfs 20MiB 100%
 
     # Create partitions
     {
@@ -123,7 +123,7 @@ if [ -z "${img##*server*}" ]; then
     # Create filesystems on partitions
     mkfs.vfat -i "${boot_uuid}" -F32 -n CIDATA "${disk}${partition_char}1"
     dd if=/dev/zero of="${disk}${partition_char}2" bs=1KB count=10 > /dev/null
-    mkfs.ext4 -U "${root_uuid}" -L cloudimg-rootfs "${disk}${partition_char}2"
+    mkfs.btrfs -U "${root_uuid}" -L cloudimg-rootfs "${disk}${partition_char}2"
 
     # Mount partitions
     mkdir -p ${mount_point}/{system-boot,writable} 
@@ -137,7 +137,7 @@ else
     dd if=/dev/zero of="${disk}" count=4096 bs=512
     parted --script "${disk}" \
     mklabel gpt \
-    mkpart primary ext4 16MiB 100%
+    mkpart primary btrfs 16MiB 100%
 
     # Create partitions
     {
@@ -165,7 +165,7 @@ else
 
     # Create filesystems on partitions
     dd if=/dev/zero of="${disk}${partition_char}1" bs=1KB count=10 > /dev/null
-    mkfs.ext4 -U "${root_uuid}" -L desktop-rootfs "${disk}${partition_char}1"
+    mkfs.btrfs -U "${root_uuid}" -L desktop-rootfs "${disk}${partition_char}1"
 
     # Mount partitions
     mkdir -p ${mount_point}/writable
@@ -177,7 +177,7 @@ tar -xpf "${rootfs}" -C ${mount_point}/writable
 
 # Create fstab entries
 echo "# <file system>     <mount point>  <type>  <options>   <dump>  <fsck>" > ${mount_point}/writable/etc/fstab
-echo "UUID=${root_uuid,,} /              ext4    defaults,x-systemd.growfs    0       1" >> ${mount_point}/writable/etc/fstab
+echo "UUID=${root_uuid,,} /              btrfs   defaults,x-systemd.growfs    0       0" >> ${mount_point}/writable/etc/fstab
 
 # Write bootloader to disk image
 if [ -f "${mount_point}/writable/usr/lib/u-boot/u-boot-rockchip.bin" ]; then
