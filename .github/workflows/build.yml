@@ -28,7 +28,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout LFS
         shell: bash
@@ -75,7 +75,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout LFS
         shell: bash
@@ -130,7 +130,7 @@ jobs:
           swap-storage: true
 
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Checkout LFS
         shell: bash
